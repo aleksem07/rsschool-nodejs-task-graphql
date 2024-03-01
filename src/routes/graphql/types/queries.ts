@@ -12,21 +12,7 @@ import { UUIDType } from './uuid.js';
 import { IMember, IPost, IProfile, IUser } from '../interfaces/interfaces.js';
 import prisma from '../prisma/prisma.js';
 
-export const MemberTypesType: GraphQLObjectType = new GraphQLObjectType({
-  name: 'MemberType',
-  fields: () => ({
-    id: { type: MemberTypeId },
-    discount: { type: GraphQLFloat },
-    postsLimitPerMonth: { type: GraphQLInt },
-    profiles: {
-      type: ProfilesType,
-      resolve: async ({ id }: IMember) =>
-        await prisma.profile.findMany({ where: { memberTypeId: id } }),
-    },
-  }),
-});
-
-const MemberTypeId = new GraphQLEnumType({
+export const MemberTypeId = new GraphQLEnumType({
   name: 'MemberTypeId',
   values: {
     basic: {
@@ -38,9 +24,24 @@ const MemberTypeId = new GraphQLEnumType({
   },
 });
 
+export const MemberType: GraphQLObjectType = new GraphQLObjectType({
+  name: 'MemberType',
+  fields: () => ({
+    id: { type: MemberTypeId },
+    discount: { type: GraphQLFloat },
+    postsLimitPerMonth: { type: GraphQLInt },
+    profiles: {
+      type: ProfilesType,
+      resolve: async (args: IMember) => {
+        await prisma.profile.findMany({ where: { memberTypeId: args.id } });
+      },
+    },
+  }),
+});
+
 export const MemberTypeIdNonNull = new GraphQLNonNull(MemberTypeId);
 
-export const MembersTypesType = new GraphQLList(MemberTypesType);
+export const MembersType = new GraphQLList(MemberType);
 
 export const UserType: GraphQLObjectType = new GraphQLObjectType({
   name: 'User',
@@ -50,15 +51,44 @@ export const UserType: GraphQLObjectType = new GraphQLObjectType({
     balance: { type: GraphQLFloat },
     profile: {
       type: ProfileType,
-      resolve: async ({ id }: IUser) =>
-        await prisma.profile.findFirst({ where: { userId: id } }),
+      resolve: async (args: IUser) =>
+        await prisma.profile.findFirst({ where: { userId: args.id } }),
+    },
+
+    posts: {
+      type: PostsType,
+      resolve: async (args: IUser) =>
+        await prisma.post.findMany({ where: { authorId: args.id } }),
+    },
+
+    userSubscribedTo: {
+      type: UsersType,
+      resolve: async (args: IUser) => {
+        const results = await prisma.subscribersOnAuthors.findMany({
+          where: { subscriberId: args.id },
+          select: { author: true },
+        });
+
+        return results.map((result) => result.author);
+      },
+    },
+
+    subscribedToUser: {
+      type: UsersType,
+      resolve: async (args: IUser) => {
+        const results = await prisma.subscribersOnAuthors.findMany({
+          where: { authorId: args.id },
+          select: { subscriber: true },
+        });
+        return results.map((result) => result.subscriber);
+      },
     },
   }),
 });
 
 export const UsersType = new GraphQLList(UserType);
 
-export const PostType = new GraphQLObjectType({
+export const PostType: GraphQLObjectType = new GraphQLObjectType({
   name: 'Post',
   fields: () => ({
     id: { type: UUIDType },
@@ -67,15 +97,15 @@ export const PostType = new GraphQLObjectType({
     authorId: { type: UUIDType },
     author: {
       type: UserType,
-      resolve: async ({ authorId }: IPost) =>
-        await prisma.user.findFirst({ where: { id: authorId } }),
+      resolve: async (args: IPost) =>
+        await prisma.user.findFirst({ where: { id: args.authorId } }),
     },
   }),
 });
 
 export const PostsType = new GraphQLList(PostType);
 
-export const ProfileType = new GraphQLObjectType({
+export const ProfileType: GraphQLObjectType = new GraphQLObjectType({
   name: 'Profile',
   fields: () => ({
     id: { type: UUIDType },
@@ -84,14 +114,14 @@ export const ProfileType = new GraphQLObjectType({
     userId: { type: UUIDType },
     user: {
       type: UserType,
-      resolve: async ({ userId }: IProfile) =>
-        prisma.user.findFirst({ where: { id: userId } }),
+      resolve: async (args: IProfile) =>
+        prisma.user.findFirst({ where: { id: args.userId } }),
     },
     memberTypeId: { type: MemberTypeId },
     memberType: {
-      type: MemberTypesType,
-      resolve: async ({ memberTypeId }: IProfile) =>
-        await prisma.memberType.findFirst({ where: { id: memberTypeId } }),
+      type: MemberType,
+      resolve: async (args: IProfile) =>
+        await prisma.memberType.findFirst({ where: { id: args.memberTypeId } }),
     },
   }),
 });
