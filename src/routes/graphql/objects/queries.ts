@@ -1,12 +1,16 @@
 import { GraphQLObjectType } from 'graphql';
 import {
+  MemberTypeIdNonNull,
   MemberTypesType,
+  MembersTypesType,
   PostType,
+  PostsType,
   ProfileType,
+  ProfilesType,
   UserType,
   UsersType,
 } from '../types/queries.js';
-import { UUIDType } from '../types/uuid.js';
+import { UUIDType, UUIDTypeNonNull } from '../types/uuid.js';
 import prisma from '../prisma/prisma.js';
 import { IUser, IPost, IProfile, IMember } from '../interfaces/interfaces.js';
 
@@ -33,7 +37,7 @@ export const schemaQuery = new GraphQLObjectType({
     post: {
       type: PostType,
       args: {
-        id: { type: UUIDType },
+        id: { type: UUIDTypeNonNull },
       },
       resolve: async (_parent, args: IPost) => {
         await prisma.post.findFirst({ where: { id: args.id } });
@@ -41,7 +45,7 @@ export const schemaQuery = new GraphQLObjectType({
     },
 
     posts: {
-      type: PostType,
+      type: PostsType,
       resolve: async () => {
         await prisma.post.findMany();
       },
@@ -58,7 +62,7 @@ export const schemaQuery = new GraphQLObjectType({
     },
 
     profiles: {
-      type: ProfileType,
+      type: ProfilesType,
       resolve: async () => {
         await prisma.profile.findMany();
       },
@@ -67,7 +71,7 @@ export const schemaQuery = new GraphQLObjectType({
     memberType: {
       type: MemberTypesType,
       args: {
-        id: { type: UUIDType },
+        id: { type: MemberTypeIdNonNull },
       },
       resolve: async (_parent, args: IMember) => {
         await prisma.memberType.findFirst({ where: { id: args.id } });
@@ -75,7 +79,7 @@ export const schemaQuery = new GraphQLObjectType({
     },
 
     memberTypes: {
-      type: MemberTypesType,
+      type: MembersTypesType,
       resolve: async () => {
         await prisma.memberType.findMany();
       },
