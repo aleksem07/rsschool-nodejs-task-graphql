@@ -1,6 +1,6 @@
 import { GraphQLObjectType } from 'graphql';
 import {
-  MemberTypeIdNonNull,
+  MemberTypeIdNotNull,
   MemberType,
   MembersType,
   PostType,
@@ -50,7 +50,7 @@ export const schemaQuery = new GraphQLObjectType({
     memberType: {
       type: MemberType,
       args: {
-        id: { type: MemberTypeIdNonNull },
+        id: { type: MemberTypeIdNotNull },
       },
       resolve: async (_parent, args: IMember) =>
         await prisma.memberType.findFirst({ where: { id: args.id } }),

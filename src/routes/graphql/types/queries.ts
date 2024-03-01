@@ -39,7 +39,7 @@ export const MemberType: GraphQLObjectType = new GraphQLObjectType({
   }),
 });
 
-export const MemberTypeIdNonNull = new GraphQLNonNull(MemberTypeId);
+export const MemberTypeIdNotNull = new GraphQLNonNull(MemberTypeId);
 
 export const MembersType = new GraphQLList(MemberType);
 
