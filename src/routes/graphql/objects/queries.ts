@@ -31,8 +31,15 @@ export const schemaQuery = new GraphQLObjectType({
 
     users: {
       type: usersType,
-      resolve: async () => await prisma.user.findMany(),
+      resolve: async () => {
+        try {
+          return await prisma.user.findMany();
+        } catch (err) {
+          return err;
+        }
+      },
     },
+
     post: {
       type: postType,
       args: { id: { type: UUIDTypeNonNull } },
@@ -47,8 +54,15 @@ export const schemaQuery = new GraphQLObjectType({
 
     posts: {
       type: postsType,
-      resolve: async () => await prisma.post.findMany(),
+      resolve: async () => {
+        try {
+          return await prisma.post.findMany();
+        } catch (err) {
+          return err;
+        }
+      },
     },
+
     profile: {
       type: profileType,
       args: { id: { type: UUIDType } },
