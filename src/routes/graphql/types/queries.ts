@@ -12,7 +12,7 @@ import { UUIDType } from './uuid.js';
 import { IMember, IPost, IProfile, IUser } from '../interfaces/interfaces.js';
 import prisma from '../prisma/prisma.js';
 
-export const MemberTypeId = new GraphQLEnumType({
+export const memberTypeId = new GraphQLEnumType({
   name: 'MemberTypeId',
   values: {
     basic: {
@@ -24,14 +24,14 @@ export const MemberTypeId = new GraphQLEnumType({
   },
 });
 
-export const MemberType: GraphQLObjectType = new GraphQLObjectType({
+export const memberType: GraphQLObjectType = new GraphQLObjectType({
   name: 'MemberType',
   fields: () => ({
-    id: { type: MemberTypeId },
+    id: { type: memberTypeId },
     discount: { type: GraphQLFloat },
     postsLimitPerMonth: { type: GraphQLInt },
     profiles: {
-      type: ProfilesType,
+      type: profilesType,
       resolve: async (args: IMember) => {
         try {
           return await prisma.profile.findMany({ where: { memberTypeId: args.id } });
@@ -43,18 +43,18 @@ export const MemberType: GraphQLObjectType = new GraphQLObjectType({
   }),
 });
 
-export const MemberTypeIdNotNull = new GraphQLNonNull(MemberTypeId);
+export const memberTypeIdNotNull = new GraphQLNonNull(memberTypeId);
 
-export const MembersType = new GraphQLList(MemberType);
+export const membersType = new GraphQLList(memberType);
 
-export const UserType: GraphQLObjectType = new GraphQLObjectType({
+export const userType: GraphQLObjectType = new GraphQLObjectType({
   name: 'UserType',
   fields: () => ({
     id: { type: UUIDType },
     name: { type: GraphQLString },
     balance: { type: GraphQLFloat },
     profile: {
-      type: ProfileType,
+      type: profileType,
       resolve: async (args: IUser) => {
         try {
           return await prisma.profile.findFirst({ where: { userId: args.id } });
@@ -65,7 +65,7 @@ export const UserType: GraphQLObjectType = new GraphQLObjectType({
     },
 
     posts: {
-      type: PostsType,
+      type: postsType,
       resolve: async (args: IUser) => {
         try {
           return await prisma.post.findMany({ where: { authorId: args.id } });
@@ -76,7 +76,7 @@ export const UserType: GraphQLObjectType = new GraphQLObjectType({
     },
 
     userSubscribedTo: {
-      type: UsersType,
+      type: usersType,
       resolve: async (args: IUser) => {
         try {
           const results = await prisma.subscribersOnAuthors.findMany({
@@ -92,7 +92,7 @@ export const UserType: GraphQLObjectType = new GraphQLObjectType({
     },
 
     subscribedToUser: {
-      type: UsersType,
+      type: usersType,
       resolve: async (args: IUser) => {
         try {
           const results = await prisma.subscribersOnAuthors.findMany({
@@ -109,9 +109,9 @@ export const UserType: GraphQLObjectType = new GraphQLObjectType({
   }),
 });
 
-export const UsersType = new GraphQLList(UserType);
+export const usersType = new GraphQLList(userType);
 
-export const PostType: GraphQLObjectType = new GraphQLObjectType({
+export const postType: GraphQLObjectType = new GraphQLObjectType({
   name: 'PostType',
   fields: () => ({
     id: { type: UUIDType },
@@ -119,7 +119,7 @@ export const PostType: GraphQLObjectType = new GraphQLObjectType({
     content: { type: GraphQLString },
     authorId: { type: UUIDType },
     author: {
-      type: UserType,
+      type: userType,
       resolve: async (args: IPost) => {
         try {
           return await prisma.user.findFirst({ where: { id: args.authorId } });
@@ -131,9 +131,9 @@ export const PostType: GraphQLObjectType = new GraphQLObjectType({
   }),
 });
 
-export const PostsType = new GraphQLList(PostType);
+export const postsType = new GraphQLList(postType);
 
-export const ProfileType: GraphQLObjectType = new GraphQLObjectType({
+export const profileType: GraphQLObjectType = new GraphQLObjectType({
   name: 'ProfileType',
   fields: () => ({
     id: { type: UUIDType },
@@ -141,7 +141,7 @@ export const ProfileType: GraphQLObjectType = new GraphQLObjectType({
     yearOfBirth: { type: GraphQLInt },
     userId: { type: UUIDType },
     user: {
-      type: UserType,
+      type: userType,
       resolve: async (args: IProfile) => {
         try {
           return await prisma.user.findFirst({ where: { id: args.userId } });
@@ -150,9 +150,9 @@ export const ProfileType: GraphQLObjectType = new GraphQLObjectType({
         }
       },
     },
-    memberTypeId: { type: MemberTypeId },
+    memberTypeId: { type: memberTypeId },
     memberType: {
-      type: MemberType,
+      type: memberType,
       resolve: async (args: IProfile) => {
         try {
           return await prisma.memberType.findFirst({ where: { id: args.memberTypeId } });
@@ -164,4 +164,4 @@ export const ProfileType: GraphQLObjectType = new GraphQLObjectType({
   }),
 });
 
-export const ProfilesType = new GraphQLList(ProfileType);
+export const profilesType = new GraphQLList(profileType);

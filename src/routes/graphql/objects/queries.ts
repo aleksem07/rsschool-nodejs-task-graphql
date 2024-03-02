@@ -1,14 +1,14 @@
 import { GraphQLObjectType } from 'graphql';
 import {
-  MemberTypeIdNotNull,
-  MemberType,
-  MembersType,
-  PostType,
-  PostsType,
-  ProfileType,
-  ProfilesType,
-  UserType,
-  UsersType,
+  memberTypeIdNotNull,
+  memberType,
+  membersType,
+  postType,
+  postsType,
+  profileType,
+  profilesType,
+  userType,
+  usersType,
 } from '../types/queries.js';
 import { UUIDType, UUIDTypeNonNull } from '../types/uuid.js';
 import prisma from '../prisma/prisma.js';
@@ -18,45 +18,45 @@ export const schemaQuery = new GraphQLObjectType({
   name: 'schemaQuery',
   fields: {
     user: {
-      type: UserType,
+      type: userType,
       args: { id: { type: UUIDType } },
       resolve: async (_parent, args: IUser) =>
         await prisma.user.findUnique({ where: { id: args.id } }),
     },
     users: {
-      type: UsersType,
+      type: usersType,
       resolve: async () => await prisma.user.findMany(),
     },
     post: {
-      type: PostType,
+      type: postType,
       args: { id: { type: UUIDTypeNonNull } },
       resolve: async (_parent, args: IPost) =>
         await prisma.post.findUnique({ where: { id: args.id } }),
     },
     posts: {
-      type: PostsType,
+      type: postsType,
       resolve: async () => await prisma.post.findMany(),
     },
     profile: {
-      type: ProfileType,
+      type: profileType,
       args: { id: { type: UUIDType } },
       resolve: async (_parent, args: IProfile) =>
         await prisma.profile.findUnique({ where: { id: args.id } }),
     },
     profiles: {
-      type: ProfilesType,
+      type: profilesType,
       resolve: async () => await prisma.profile.findMany(),
     },
     memberType: {
-      type: MemberType,
+      type: memberType,
       args: {
-        id: { type: MemberTypeIdNotNull },
+        id: { type: memberTypeIdNotNull },
       },
       resolve: async (_parent, args: IMember) =>
         await prisma.memberType.findFirst({ where: { id: args.id } }),
     },
     memberTypes: {
-      type: MembersType,
+      type: membersType,
       resolve: async () => await prisma.memberType.findMany(),
     },
   },

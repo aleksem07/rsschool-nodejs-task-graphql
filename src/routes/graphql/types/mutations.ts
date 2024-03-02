@@ -1,9 +1,9 @@
 import { GraphQLFloat, GraphQLNonNull, GraphQLString } from 'graphql';
 import { GraphQLInputObjectType, GraphQLBoolean, GraphQLInt } from 'graphql/index.js';
 import { UUIDTypeNonNull, UUIDType } from './uuid.js';
-import { MemberTypeId, MemberTypeIdNotNull } from './queries.js';
+import { memberTypeId, memberTypeIdNotNull } from './queries.js';
 
-export const ChangeUserInputType = new GraphQLInputObjectType({
+export const userChangeInputType = new GraphQLInputObjectType({
   name: 'ChangeUserInput',
   fields: () => ({
     name: { type: GraphQLString },
@@ -11,7 +11,7 @@ export const ChangeUserInputType = new GraphQLInputObjectType({
   }),
 });
 
-export const CreateUserInputType = new GraphQLInputObjectType({
+export const userCreateInputType = new GraphQLInputObjectType({
   name: 'CreateUserInput',
   fields: () => ({
     name: { type: new GraphQLNonNull(GraphQLString) },
@@ -19,26 +19,26 @@ export const CreateUserInputType = new GraphQLInputObjectType({
   }),
 });
 
-export const CreateProfileInputType = new GraphQLInputObjectType({
+export const profileCreateInputType = new GraphQLInputObjectType({
   name: 'CreateProfileInput',
   fields: () => ({
     userId: { type: UUIDTypeNonNull },
-    memberTypeId: { type: MemberTypeIdNotNull },
+    memberTypeId: { type: memberTypeIdNotNull },
     isMale: { type: GraphQLBoolean },
     yearOfBirth: { type: GraphQLInt },
   }),
 });
 
-export const ChangeProfileInputType = new GraphQLInputObjectType({
+export const profileChangeInputType = new GraphQLInputObjectType({
   name: 'ChangeProfileInput',
   fields: () => ({
-    memberTypeId: { type: MemberTypeId },
+    memberTypeId: { type: memberTypeId },
     isMale: { type: GraphQLBoolean },
     yearOfBirth: { type: GraphQLInt },
   }),
 });
 
-export const CreatePostInputType = new GraphQLInputObjectType({
+export const postCreateInputType = new GraphQLInputObjectType({
   name: 'CreatePostInput',
   fields: () => ({
     authorId: { type: UUIDTypeNonNull },
@@ -47,7 +47,7 @@ export const CreatePostInputType = new GraphQLInputObjectType({
   }),
 });
 
-export const ChangePostInputType = new GraphQLInputObjectType({
+export const postChangeInputType = new GraphQLInputObjectType({
   name: 'ChangePostInput',
   fields: () => ({
     authorId: { type: UUIDType },
