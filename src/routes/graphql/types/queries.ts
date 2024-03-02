@@ -44,7 +44,7 @@ export const MemberTypeIdNotNull = new GraphQLNonNull(MemberTypeId);
 export const MembersType = new GraphQLList(MemberType);
 
 export const UserType: GraphQLObjectType = new GraphQLObjectType({
-  name: 'User',
+  name: 'UserType',
   fields: () => ({
     id: { type: UUIDType },
     name: { type: GraphQLString },
@@ -89,7 +89,7 @@ export const UserType: GraphQLObjectType = new GraphQLObjectType({
 export const UsersType = new GraphQLList(UserType);
 
 export const PostType: GraphQLObjectType = new GraphQLObjectType({
-  name: 'Post',
+  name: 'PostType',
   fields: () => ({
     id: { type: UUIDType },
     title: { type: GraphQLString },
@@ -106,7 +106,7 @@ export const PostType: GraphQLObjectType = new GraphQLObjectType({
 export const PostsType = new GraphQLList(PostType);
 
 export const ProfileType: GraphQLObjectType = new GraphQLObjectType({
-  name: 'Profile',
+  name: 'ProfileType',
   fields: () => ({
     id: { type: UUIDType },
     isMale: { type: GraphQLBoolean },

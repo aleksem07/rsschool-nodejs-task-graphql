@@ -24,7 +24,7 @@ import prisma from '../prisma/prisma.js';
 import { UUIDType } from '../types/uuid.js';
 
 export const schemaMutations = new GraphQLObjectType({
-  name: 'Mutation',
+  name: 'schemaMutations',
 
   fields: () => ({
     createPost: {

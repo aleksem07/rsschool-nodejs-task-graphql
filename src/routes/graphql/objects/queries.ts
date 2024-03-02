@@ -15,7 +15,7 @@ import prisma from '../prisma/prisma.js';
 import { IUser, IPost, IProfile, IMember } from '../interfaces/interfaces.js';
 
 export const schemaQuery = new GraphQLObjectType({
-  name: 'Query',
+  name: 'schemaQuery',
   fields: {
     user: {
       type: UserType,
