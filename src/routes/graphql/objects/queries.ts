@@ -20,9 +20,15 @@ export const schemaQuery = new GraphQLObjectType({
     user: {
       type: userType,
       args: { id: { type: UUIDType } },
-      resolve: async (_parent, args: IUser) =>
-        await prisma.user.findUnique({ where: { id: args.id } }),
+      resolve: async (_parent, args: IUser) => {
+        try {
+          return await prisma.user.findUnique({ where: { id: args.id } });
+        } catch (err) {
+          return err;
+        }
+      },
     },
+
     users: {
       type: usersType,
       resolve: async () => await prisma.user.findMany(),
@@ -30,9 +36,15 @@ export const schemaQuery = new GraphQLObjectType({
     post: {
       type: postType,
       args: { id: { type: UUIDTypeNonNull } },
-      resolve: async (_parent, args: IPost) =>
-        await prisma.post.findUnique({ where: { id: args.id } }),
+      resolve: async (_parent, args: IPost) => {
+        try {
+          return await prisma.post.findUnique({ where: { id: args.id } });
+        } catch (err) {
+          return err;
+        }
+      },
     },
+
     posts: {
       type: postsType,
       resolve: async () => await prisma.post.findMany(),
@@ -40,24 +52,49 @@ export const schemaQuery = new GraphQLObjectType({
     profile: {
       type: profileType,
       args: { id: { type: UUIDType } },
-      resolve: async (_parent, args: IProfile) =>
-        await prisma.profile.findUnique({ where: { id: args.id } }),
+      resolve: async (_parent, args: IProfile) => {
+        try {
+          return await prisma.profile.findUnique({ where: { id: args.id } });
+        } catch (err) {
+          return err;
+        }
+      },
     },
+
     profiles: {
       type: profilesType,
-      resolve: async () => await prisma.profile.findMany(),
+      resolve: async () => {
+        try {
+          return await prisma.profile.findMany();
+        } catch (err) {
+          return err;
+        }
+      },
     },
+
     memberType: {
       type: memberType,
       args: {
         id: { type: memberTypeIdNotNull },
       },
-      resolve: async (_parent, args: IMember) =>
-        await prisma.memberType.findFirst({ where: { id: args.id } }),
+      resolve: async (_parent, args: IMember) => {
+        try {
+          return await prisma.memberType.findUnique({ where: { id: args.id } });
+        } catch (err) {
+          return err;
+        }
+      },
     },
+
     memberTypes: {
       type: membersType,
-      resolve: async () => await prisma.memberType.findMany(),
+      resolve: async () => {
+        try {
+          return await prisma.memberType.findMany();
+        } catch (err) {
+          return err;
+        }
+      },
     },
   },
 });
